@@ -2,23 +2,23 @@ import pygame
 
 
 def main():
-	pygame.init()
+    pygame.init()
 
-	screen = pygame.display.set_mode([500, 500])
+    screen = pygame.display.set_mode([500, 500])
 
-	running = True
-	while running:
+    running = True
+    while running:
 
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				running = False
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
-		screen.fill((255, 255, 255))
+        screen.fill((255, 255, 255))
 
-		pygame.draw.circle(screen, (0, 0, 255), (250, 250), 75)
-		pygame.display.flip()
-	pygame.quit()
+        pygame.draw.circle(screen, (0, 0, 255), (250, 250), 75)
+        pygame.display.flip()
+    pygame.quit()
 
 
 if __name__ == "__main__":
-	main()
+    main()
