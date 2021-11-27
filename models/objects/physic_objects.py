@@ -1,14 +1,11 @@
 from pygame.surface import Surface
+from pygame.math import Vector2
 
 
 class PhysicObject:
 
-    def __init__(self, position: list[int], velocity=None, acceleration=None,
+    def __init__(self, position: Vector2, velocity: Vector2 = Vector2(0, 0), acceleration: Vector2 = Vector2(0, 0),
                  is_static: bool = False):
-        if acceleration is None:
-            acceleration = [0, 0]
-        if velocity is None:
-            velocity = [0, 0]
         self.position = position
         self.velocity = velocity
         self.acceleration = acceleration
@@ -20,11 +17,9 @@ class PhysicObject:
     def calc_position(self, delta_time):
         if self.is_static:
             return
-        self.position[0] += delta_time * self.velocity[0]
-        self.position[1] += delta_time * self.velocity[1]
+        self.position += delta_time * self.velocity
 
     def calc_velocity(self, delta_time):
         if self.is_static:
             return
-        self.velocity[0] += delta_time * self.acceleration[0]
-        self.velocity[1] += delta_time * self.acceleration[1]
+        self.velocity += delta_time * self.acceleration
