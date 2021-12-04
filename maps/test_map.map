@@ -1,0 +1,44 @@
+{
+  "assets": [
+    {
+      "name": "brick",
+      "src": "brick.png"
+    },
+    {
+      "name": "ladder",
+      "src": "ladder.png"
+    }
+  ],
+  "background": "background.png",
+  "map": [
+    {
+      "type": "image",
+      "asset": "ladder",
+      "position": [
+        10,
+        10
+      ],
+      "size": [
+        40,
+        40
+      ]
+    },
+    {
+      "type": "image-stretch",
+      "asset": "brick",
+      "stretch": "yes",
+      "start-position": [
+        10,
+        10
+      ],
+      "end-position": [
+        300,
+        10
+      ],
+      "size": [
+        40,
+        40
+      ]
+    }
+  ]
+}
