@@ -2,7 +2,7 @@ from models.game_manager import GameManager
 
 
 def main():
-    GameManager(1200, 900).run()
+    GameManager(800, 600).run()
 
 
 if __name__ == "__main__":
