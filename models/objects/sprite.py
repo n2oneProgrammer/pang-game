@@ -15,8 +15,26 @@ class Sprite(PhysicObject):
         self.path = os.path.join('assets', path)
         self.width = width
         self.height = height
+        self.img = self.prepare_img()
+
+
+    def prepare_img(self):
+        loaded_img = pygame.image.load(self.path)
+        w, h = (loaded_img.get_width(), loaded_img.get_height())
+
+        if self.width:
+            if self.height:
+                w, h = self.width, self.height
+            else:
+                h = h * self.width / w
+                w = self.width
+        elif self.height:
+            w = w * self.height / h
+    
+        scaled_img = pygame.transform.scale(loaded_img, (w, h))
+
+        return scaled_img
+
 
     def draw(self, screen: Surface):
-        loaded_img = pygame.image.load(self.path)
-        scaled_img = pygame.transform.scale(loaded_img, (self.width, self.height)) 
-        screen.blit(scaled_img, (self.position[0], self.position[1]))
+        screen.blit(self.img, (self.position[0], self.position[1]))
