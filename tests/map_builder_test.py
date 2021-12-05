@@ -172,3 +172,77 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
         self.assertEqual(result.width, expect.width)
         self.assertEqual(result.height, expect.height)
         self.assertEqual(result.color, expect.color)
+
+    # STRETCH OPCTIONS
+    def test_stretch_check_require_no_start_position(self):
+        map_object = {
+            "type": "rect",
+            "color": "#000000",
+            "size": [10, 10],
+            "stretch": "yes",
+            "end-position": [30, 10]
+        }
+
+        with self.assertRaises(ValueError):
+            self.map_builder.construct_object(map_object)
+
+    def test_stretch_check_require_no_end_position(self):
+        map_object = {
+            "type": "rect",
+            "color": "#000000",
+            "size": [10, 10],
+            "stretch": "yes",
+            "start-position": [0, 0]
+        }
+
+        with self.assertRaises(ValueError):
+            self.map_builder.construct_object(map_object)
+
+    def test_stretch_x(self):
+        map_object = {
+            "type": "rect",
+            "color": "#000000",
+            "size": [10, 10],
+            "stretch": "yes",
+            "start-position": [0, 30],
+            "end-position": [100, 30]
+        }
+
+        result = self.map_builder.construct_object(map_object)
+
+        self.assertEqual(len(result), 10)
+        for i in range(0, 10):
+            self.assertEqual(result[i].position, Vector2(i * 10, 30))
+
+    def test_stretch_y(self):
+        map_object = {
+            "type": "rect",
+            "color": "#000000",
+            "size": [10, 10],
+            "stretch": "yes",
+            "start-position": [30, 0],
+            "end-position": [30, 100]
+        }
+
+        result = self.map_builder.construct_object(map_object)
+
+        self.assertEqual(len(result), 10)
+        for i in range(0, 10):
+            self.assertEqual(result[i].position, Vector2(30, i * 10))
+
+    def test_stretch_xy(self):
+        map_object = {
+            "type": "rect",
+            "color": "#000000",
+            "size": [10, 10],
+            "stretch": "yes",
+            "start-position": [0, 0],
+            "end-position": [100, 100]
+        }
+
+        result = self.map_builder.construct_object(map_object)
+
+        self.assertEqual(len(result), 100)
+        for i in range(0, 10):
+            for j in range(0, 10):
+                self.assertEqual(result[i * 10 + j].position, Vector2(i * 10, j * 10))
