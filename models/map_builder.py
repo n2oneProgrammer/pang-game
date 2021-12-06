@@ -1,3 +1,4 @@
+import json
 import os
 from typing import List
 
@@ -9,14 +10,19 @@ from models.objects.rectangle import Rectangle
 
 class MapBuilder:
     def __init__(self, src_map):
-        self.src_map = src_map
+        self.src_map = os.path.join("maps", src_map)
         self.assets = []
 
     def get_elements(self):
         pass
 
     def load_assets(self):
-        pass
+        with open(self.src_map, "r") as map_source_file:
+            map_source = json.load(map_source_file)
+            self.assets = []
+            if "assets" in map_source:
+                for asset in map_source['assets']:
+                    self.assets.append(self.construct_asset(asset))
 
     @staticmethod
     def construct_asset(asset_json) -> object:
