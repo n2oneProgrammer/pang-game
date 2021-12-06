@@ -37,4 +37,4 @@ class Sprite(PhysicObject):
 
 
     def draw(self, screen: Surface):
-        screen.blit(self.img, (self.position[0], self.position[1]))
+        screen.blit(self.img, self.position)
