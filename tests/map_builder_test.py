@@ -315,7 +315,7 @@ class MapBuilderGetElementsTest(unittest.TestCase):
             ]
         })
         with patch("builtins.open", mock_open(read_data=map_source)):
-            self.map_builder.construct_object = Mock(return_value=None)
+            self.map_builder.construct_object = Mock(return_value=[None])
             self.map_builder.load_assets = Mock()
             self.map_builder.assets = []
 
