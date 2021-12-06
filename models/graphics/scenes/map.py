@@ -1,9 +1,9 @@
 from models.graphics.scenes.scene import Scene
 
-from models.objects.rectangle import Rectangle
+from models.objects.sprite import Sprite
 
 
 class Map(Scene):
     def __init__(self):
         super().__init__()
-        self.objects.append(Rectangle((0, 100), 90, 40))
+        self.objects.append(Sprite('bob.png', (50, 50), width = 150))
