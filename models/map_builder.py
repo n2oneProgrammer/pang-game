@@ -20,7 +20,7 @@ class MapBuilder:
             elements: List[PhysicObject] = []
             if "map" in map_source:
                 for element in map_source['map']:
-                    elements.append(self.construct_object(element))
+                    elements.extend(self.construct_object(element))
 
                 return elements
             else:

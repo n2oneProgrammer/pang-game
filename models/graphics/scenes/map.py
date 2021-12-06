@@ -1,9 +1,9 @@
 from models.graphics.scenes.scene import Scene
-
-from models.objects.rectangle import Rectangle
+from models.map_builder import MapBuilder
 
 
 class Map(Scene):
     def __init__(self):
         super().__init__()
-        self.objects.append(Rectangle((0, 100), 90, 40))
+        self.map_builder = MapBuilder("test_map.map")
+        self.objects = self.map_builder.get_elements()
