@@ -174,7 +174,7 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
         self.assertEqual(result.height, expect.height)
         self.assertEqual(result.color, expect.color)
 
-    # STRETCH OPCTIONS
+    # STRETCH OPTIONS
     def test_stretch_require_no_start_position(self):
         map_object = {
             "type": "rect",
