@@ -251,9 +251,8 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
 
 class MapBuilderLoadAssetsTest(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        cls.map_builder = MapBuilder("src")
+    def setUp(self):
+        self.map_builder = MapBuilder("src")
 
     def test_require_no_asset(self):
         map_source = json.dumps({
@@ -261,7 +260,7 @@ class MapBuilderLoadAssetsTest(unittest.TestCase):
             "background": ""
         })
         with patch("builtins.open", mock_open(read_data=map_source)):
-            MapBuilder.construct_asset = Mock(return_value=None)
+            self.map_builder.construct_asset = Mock(return_value=None)
             self.map_builder.load_assets()
             self.assertEqual(len(self.map_builder.assets), 0)
 
@@ -282,3 +281,43 @@ class MapBuilderLoadAssetsTest(unittest.TestCase):
             MapBuilder.construct_asset = Mock(return_value=None)
             self.map_builder.load_assets()
             self.assertEqual(len(self.map_builder.assets), 2)
+
+
+class MapBuilderGetElementsTest(unittest.TestCase):
+
+    def setUp(self):
+        self.map_builder = MapBuilder("src")
+
+    def test_require_no_map(self):
+        map_source = json.dumps({
+            "assets": [],
+            "background": ""
+        })
+        with patch("builtins.open", mock_open(read_data=map_source)):
+            self.map_builder.construct_object = Mock(return_value=None)
+            self.map_builder.load_assets = Mock()
+            self.map_builder.assets = []
+            self.assertRaises(ValueError, self.map_builder.get_elements)
+
+    def test_load_all_elements(self):
+        map_source = json.dumps({
+            "map": [
+                {
+                    "type": "rect",
+                    "position": [1, 1],
+                    "size": [10, 10]
+                },
+                {
+                    "type": "rect",
+                    "position": [2, 2],
+                    "size": [12, 12]
+                }
+            ]
+        })
+        with patch("builtins.open", mock_open(read_data=map_source)):
+            self.map_builder.construct_object = Mock(return_value=None)
+            self.map_builder.load_assets = Mock()
+            self.map_builder.assets = []
+
+            elements = self.map_builder.get_elements()
+            self.assertEqual(len(elements), 2)

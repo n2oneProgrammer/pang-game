@@ -13,8 +13,18 @@ class MapBuilder:
         self.src_map = os.path.join("maps", src_map)
         self.assets = []
 
-    def get_elements(self):
-        pass
+    def get_elements(self) -> List[PhysicObject]:
+        self.load_assets()
+        with open(self.src_map, "r") as map_source_file:
+            map_source = json.load(map_source_file)
+            elements: List[PhysicObject] = []
+            if "map" in map_source:
+                for element in map_source['map']:
+                    elements.append(self.construct_object(element))
+
+                return elements
+            else:
+                raise ValueError("Map JSON must have map(list of elements on the map)")
 
     def load_assets(self):
         with open(self.src_map, "r") as map_source_file:
