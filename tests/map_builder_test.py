@@ -48,9 +48,9 @@ class MapBuilderConstructAssetTest(unittest.TestCase):
         os.path.exists = Mock(return_value=True)
 
         result = self.map_builder.construct_asset(asset_json)
-
+    
         self.assertEqual(result["name"], "name asset")
-        self.assertEqual(result["src"], "assets\\test_case_exit.png")
+        self.assertEqual(result["src"], "test_case_exit.png")
 
 
 class MapBuilderConstructObjectTest(unittest.TestCase):
@@ -119,7 +119,7 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
         self.map_builder.assets = []
 
         self.assertRaises(ValueError, self.map_builder.construct_object, map_object)
- 
+
     def test_type_sprite_returning_object(self):
         map_object = {
             "type": "sprite",
