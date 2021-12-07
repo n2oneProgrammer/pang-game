@@ -1,4 +1,3 @@
-from models.graphics.scenes.map import Map
 import pygame
 
 from models.graphics.scenes.map import Map

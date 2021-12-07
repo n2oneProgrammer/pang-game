@@ -6,6 +6,7 @@ from pygame.math import Vector2
 
 from models.objects.physic_objects import PhysicObject
 from models.objects.rectangle import Rectangle
+from models.objects.sprite import Sprite
 
 
 class MapBuilder:
@@ -41,8 +42,7 @@ class MapBuilder:
         if "src" not in asset_json or type(asset_json["src"]) is not str:
             raise ValueError("Assert object must have src (path to image)")
 
-        asset_json["src"] = os.path.join("assets", asset_json["src"])
-        if not os.path.exists(asset_json["src"]):
+        if not os.path.exists(os.path.join("assets", asset_json["src"])):
             raise FileNotFoundError(f"I cant find {asset_json['src']}")
         return asset_json
 
@@ -95,21 +95,33 @@ class MapBuilder:
         method = getattr(self, method_name, self._not_implemented)
         return method(object_json)
 
+    def _get_asset(self, name_asset):
+        for asset in self.assets:
+            if asset["name"] == name_asset:
+                return asset
+        return None
+
     def get_background(self):
         pass
 
     def _not_implemented(self, object_json):
         raise NotImplementedError(f"Type {object_json['type']} is not Implemented")
 
-    @staticmethod
-    def _construct_sprite(object_json) -> PhysicObject:
+    def _construct_sprite(self, object_json) -> PhysicObject:
         if "asset" not in object_json:
             raise ValueError("Object Sprite must have asset(name to asset)")
-        # TODO(n2one): Change to sprite object
-        pass
 
-    @staticmethod
-    def _construct_rect(object_json) -> PhysicObject:
+        asset = self._get_asset(object_json["asset"])
+        if asset is None:
+            raise ValueError(f"Not found asset {object_json['asset']}")
+        return Sprite(
+            path=asset['src'],
+            position=object_json["position"],
+            width=object_json["size"][0],
+            height=object_json["size"][1]
+        )
+
+    def _construct_rect(self, object_json) -> PhysicObject:
         if "color" not in object_json:
             raise ValueError("Object Sprite must have color(in format #000000)")
         return Rectangle(
