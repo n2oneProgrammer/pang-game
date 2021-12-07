@@ -1,0 +1,34 @@
+{
+  "background": "background.png",
+  "map": [
+    {
+      "type": "rect",
+      "color": "#ff0011",
+      "position": [
+        100,
+        100
+      ],
+      "size": [
+        40,
+        40
+      ]
+    },
+    {
+      "type": "rect",
+      "color": "#0000ff",
+      "stretch": "yes",
+      "start-position": [
+        0,
+        10
+      ],
+      "end-position": [
+        800,
+        10
+      ],
+      "size": [
+        40,
+        40
+      ]
+    }
+  ]
+}
