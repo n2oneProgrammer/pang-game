@@ -1,5 +1,11 @@
 {
   "background": "background.png",
+  "assets": [
+    {
+      "name": "player",
+      "src": "bob.png"
+    }
+  ],
   "map": [
     {
       "type": "rect",
@@ -28,6 +34,18 @@
       "size": [
         40,
         40
+      ]
+    },
+    {
+      "type": "sprite",
+      "asset": "player",
+      "position": [
+        50,
+        100
+      ],
+      "size": [
+        200,
+        null
       ]
     }
   ]

@@ -7,7 +7,7 @@ from models.objects.physic_objects import PhysicObject
 
 
 class Sprite(PhysicObject):
-    def __init__(self, path, position: Vector2, width = None, height = None,
+    def __init__(self, path, position: Vector2, width=None, height=None,
                  velocity: Vector2 = Vector2(0, 0),
                  acceleration: Vector2 = Vector2(0, 0),
                  is_static: bool = False):
@@ -16,7 +16,6 @@ class Sprite(PhysicObject):
         self.width = width
         self.height = height
         self.img = self.prepare_img()
-
 
     def prepare_img(self):
         loaded_img = pygame.image.load(self.path)
@@ -30,11 +29,10 @@ class Sprite(PhysicObject):
                 w = self.width
         elif self.height:
             w = w * self.height / h
-    
+
         scaled_img = pygame.transform.scale(loaded_img, (w, h))
 
         return scaled_img
-
 
     def draw(self, screen: Surface):
         screen.blit(self.img, self.position)

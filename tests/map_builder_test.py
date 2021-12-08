@@ -7,6 +7,7 @@ from pygame.math import Vector2
 
 from models.map_builder import MapBuilder
 from models.objects.rectangle import Rectangle
+from models.objects.sprite import Sprite
 
 
 class MapBuilderConstructAssetTest(unittest.TestCase):
@@ -47,9 +48,9 @@ class MapBuilderConstructAssetTest(unittest.TestCase):
         os.path.exists = Mock(return_value=True)
 
         result = self.map_builder.construct_asset(asset_json)
-
+    
         self.assertEqual(result["name"], "name asset")
-        self.assertEqual(result["src"], "assets\\test_case_exit.png")
+        self.assertEqual(result["src"], "test_case_exit.png")
 
 
 class MapBuilderConstructObjectTest(unittest.TestCase):
@@ -108,6 +109,17 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.map_builder.construct_object(map_object)
 
+    def test_type_sprite_not_found_asset(self):
+        map_object = {
+            "type": "sprite",
+            "asset": "asset name",
+            "position": [0, 0],
+            "size": [0, 0]
+        }
+        self.map_builder.assets = []
+
+        self.assertRaises(ValueError, self.map_builder.construct_object, map_object)
+
     def test_type_sprite_returning_object(self):
         map_object = {
             "type": "sprite",
@@ -115,12 +127,16 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
             "position": [0, 0],
             "size": [0, 0]
         }
-        # TODO(n2one): Change to sprite object
-        expect = [None]
+        self.map_builder.assets = [
+            {"name": "asset name", "src": "random_sprite.png"}
+        ]
+        Sprite.prepare_img = Mock(return_value=None)
 
         result = self.map_builder.construct_object(map_object)
-
-        self.assertEqual(result, expect)
+        self.assertEqual(len(result), 1)
+        result = result[0]
+        self.assertIsInstance(result, Sprite)
+        self.assertEqual(os.path.normpath(result.path), os.path.normpath("assets/random_sprite.png"))
 
     # TYPE RECT
     def test_type_rect_require_no_color(self):
