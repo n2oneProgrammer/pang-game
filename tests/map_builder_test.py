@@ -1,7 +1,7 @@
 import json
 import os
 import unittest
-from unittest.mock import Mock, patch, mock_open
+from unittest.mock import Mock, patch, mock_open, MagicMock
 
 from pygame.math import Vector2
 
@@ -48,7 +48,7 @@ class MapBuilderConstructAssetTest(unittest.TestCase):
         os.path.exists = Mock(return_value=True)
 
         result = self.map_builder.construct_asset(asset_json)
-    
+
         self.assertEqual(result["name"], "name asset")
         self.assertEqual(result["src"], "test_case_exit.png")
 
@@ -66,7 +66,7 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
         }
 
         with self.assertRaises(ValueError):
-            self.map_builder.construct_object(map_object)
+            self.map_builder.construct_object(map_object, None)
 
     def test_type_no_implement(self):
         map_object = {
@@ -76,7 +76,7 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
         }
 
         with self.assertRaises(NotImplementedError):
-            self.map_builder.construct_object(map_object)
+            self.map_builder.construct_object(map_object, None)
 
     # TYPE SPRITE
     def test_type_sprite_require_no_asset(self):
@@ -87,7 +87,7 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
         }
 
         with self.assertRaises(ValueError):
-            self.map_builder.construct_object(map_object)
+            self.map_builder.construct_object(map_object, None)
 
     def test_type_sprite_require_no_position(self):
         map_object = {
@@ -97,7 +97,7 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
         }
 
         with self.assertRaises(ValueError):
-            self.map_builder.construct_object(map_object)
+            self.map_builder.construct_object(map_object, None)
 
     def test_type_sprite_require_no_size(self):
         map_object = {
@@ -107,7 +107,7 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
         }
 
         with self.assertRaises(ValueError):
-            self.map_builder.construct_object(map_object)
+            self.map_builder.construct_object(map_object, None)
 
     def test_type_sprite_not_found_asset(self):
         map_object = {
@@ -118,7 +118,7 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
         }
         self.map_builder.assets = []
 
-        self.assertRaises(ValueError, self.map_builder.construct_object, map_object)
+        self.assertRaises(ValueError, self.map_builder.construct_object, map_object, None)
 
     def test_type_sprite_returning_object(self):
         map_object = {
@@ -132,7 +132,7 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
         ]
         Sprite.prepare_img = Mock(return_value=None)
 
-        result = self.map_builder.construct_object(map_object)
+        result = self.map_builder.construct_object(map_object, None)
         self.assertEqual(len(result), 1)
         result = result[0]
         self.assertIsInstance(result, Sprite)
@@ -147,7 +147,7 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
         }
 
         with self.assertRaises(ValueError):
-            self.map_builder.construct_object(map_object)
+            self.map_builder.construct_object(map_object, None)
 
     def test_type_rect_require_no_position(self):
         map_object = {
@@ -157,7 +157,7 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
         }
 
         with self.assertRaises(ValueError):
-            self.map_builder.construct_object(map_object)
+            self.map_builder.construct_object(map_object, None)
 
     def test_type_rect_require_no_size(self):
         map_object = {
@@ -167,7 +167,7 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
         }
 
         with self.assertRaises(ValueError):
-            self.map_builder.construct_object(map_object)
+            self.map_builder.construct_object(map_object, None)
 
     def test_type_rect_returning_object(self):
         map_object = {
@@ -180,10 +180,11 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
             width=30,
             height=20,
             position=Vector2(40, 10),
-            color="#123456"
+            color="#123456",
+            space=None
         )
 
-        result = self.map_builder.construct_object(map_object)[0]
+        result = self.map_builder.construct_object(map_object, None)[0]
         self.assertIsInstance(result, Rectangle)
         self.assertEqual(result.position, expect.position)
         self.assertEqual(result.width, expect.width)
@@ -201,7 +202,7 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
         }
 
         with self.assertRaises(ValueError):
-            self.map_builder.construct_object(map_object)
+            self.map_builder.construct_object(map_object, None)
 
     def test_stretch_require_no_end_position(self):
         map_object = {
@@ -213,7 +214,7 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
         }
 
         with self.assertRaises(ValueError):
-            self.map_builder.construct_object(map_object)
+            self.map_builder.construct_object(map_object, None)
 
     def test_stretch_x(self):
         map_object = {
@@ -225,7 +226,7 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
             "end-position": [100, 30]
         }
 
-        result = self.map_builder.construct_object(map_object)
+        result = self.map_builder.construct_object(map_object, MagicMock())
 
         self.assertEqual(len(result), 10)
         for i in range(0, 10):
@@ -241,7 +242,7 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
             "end-position": [30, 100]
         }
 
-        result = self.map_builder.construct_object(map_object)
+        result = self.map_builder.construct_object(map_object, MagicMock())
 
         self.assertEqual(len(result), 10)
         for i in range(0, 10):
@@ -257,7 +258,7 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
             "end-position": [100, 100]
         }
 
-        result = self.map_builder.construct_object(map_object)
+        result = self.map_builder.construct_object(map_object, MagicMock())
 
         self.assertEqual(len(result), 100)
         for i in range(0, 10):
@@ -313,7 +314,7 @@ class MapBuilderGetElementsTest(unittest.TestCase):
             self.map_builder.construct_object = Mock(return_value=None)
             self.map_builder.load_assets = Mock()
             self.map_builder.assets = []
-            self.assertRaises(ValueError, self.map_builder.get_elements)
+            self.assertRaises(ValueError, self.map_builder.get_elements, None)
 
     def test_load_all_elements(self):
         map_source = json.dumps({
@@ -335,5 +336,5 @@ class MapBuilderGetElementsTest(unittest.TestCase):
             self.map_builder.load_assets = Mock()
             self.map_builder.assets = []
 
-            elements = self.map_builder.get_elements()
+            elements = self.map_builder.get_elements(None)
             self.assertEqual(len(elements), 2)
