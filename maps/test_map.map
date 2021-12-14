@@ -1,35 +1,35 @@
 {
-  "background": "background.png",
+  "background": "#000000",
   "assets": [
     {
-      "name": "player",
-      "src": "bob.png"
+      "name": "wall1",
+      "src": "wall1.png"
+    },
+    {
+      "name": "wall2",
+      "src": "wall2.png"
+    },
+    {
+      "name": "wall3.1",
+      "src": "wall3.1.png"
+    },
+    {
+      "name": "wall3.2",
+      "src": "wall3.2.png"
     }
   ],
   "map": [
     {
-      "type": "rect",
-      "color": "#ff0011",
-      "position": [
-        100,
-        100
-      ],
-      "size": [
-        40,
-        40
-      ]
-    },
-    {
-      "type": "rect",
-      "color": "#0000ff",
+      "type": "sprite",
+      "asset": "wall2",
       "stretch": "yes",
       "start-position": [
         0,
-        10
+        0
       ],
       "end-position": [
         800,
-        10
+        0
       ],
       "size": [
         40,
@@ -38,14 +38,53 @@
     },
     {
       "type": "sprite",
-      "asset": "player",
-      "position": [
-        50,
-        100
+      "asset": "wall2",
+      "stretch": "yes",
+      "start-position": [
+        0,
+        560
+      ],
+      "end-position": [
+        800,
+        560
       ],
       "size": [
-        200,
-        null
+        40,
+        40
+      ]
+    },
+    {
+      "type": "sprite",
+      "asset": "wall3.1",
+      "stretch": "yes",
+      "start-position": [
+        0,
+        0
+      ],
+      "end-position": [
+        0,
+        560
+      ],
+      "size": [
+        40,
+        40
+      ]
+    },
+    {
+      "type": "sprite",
+      "asset": "wall3.2",
+      "stretch": "yes",
+      "start-position": [
+        760,
+        0
+      ],
+      "end-position": [
+        760,
+        560
+      ],
+      "size": [
+        40,
+        40
       ]
     }
   ]
