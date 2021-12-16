@@ -2,6 +2,7 @@ import json
 import os
 from typing import List
 
+import pymunk
 from pygame.math import Vector2
 
 from models.objects.physic_objects import PhysicObject
@@ -14,14 +15,14 @@ class MapBuilder:
         self.src_map = os.path.join("maps", src_map)
         self.assets = []
 
-    def get_elements(self) -> List[PhysicObject]:
+    def get_elements(self, space) -> List[PhysicObject]:
         self.load_assets()
         with open(self.src_map, "r") as map_source_file:
             map_source = json.load(map_source_file)
             elements: List[PhysicObject] = []
             if "map" in map_source:
                 for element in map_source["map"]:
-                    elements.extend(self.construct_object(element))
+                    elements.extend(self.construct_object(element, space))
 
                 return elements
             else:
@@ -46,7 +47,7 @@ class MapBuilder:
             raise FileNotFoundError(f"I cant find {asset_json['src']}")
         return asset_json
 
-    def construct_object(self, object_json) -> List[PhysicObject]:
+    def construct_object(self, object_json, space) -> List[PhysicObject]:
         if "type" not in object_json:
             raise ValueError("Object must have type")
         if "size" not in object_json:
@@ -82,18 +83,33 @@ class MapBuilder:
             for x_stretch in x_positions_list:
                 for y_stretch in y_positions_list:
                     object_json["position"] = [x_stretch, y_stretch]
-                    result_list.append(self._construct_1_object(object_json))
+                    result_list.append(self._construct_1_object(object_json, None))
+
+            body = pymunk.Body()
+            body.position = [(start_position_x + end_position_x + object_json["size"][0]) / 2,
+                             (start_position_y + end_position_y + object_json["size"][1]) / 2]
+            body.body_type = pymunk.Body.STATIC
+            poly = pymunk.Poly.create_box(body,
+                                          size=(
+                                              end_position_x - start_position_x + object_json["size"][0],
+                                              end_position_y - start_position_y + object_json["size"][1]
+                                          ))
+            poly.mass = 10
+            poly.elasticity = 1
+            poly.friction = 0
+
+            space.add(body, poly)
             return result_list
 
         if "position" not in object_json:
             raise ValueError(f"Object {object_json['type']} must have position")
 
-        return [self._construct_1_object(object_json)]
+        return [self._construct_1_object(object_json, space)]
 
-    def _construct_1_object(self, object_json):
+    def _construct_1_object(self, object_json, space):
         method_name = f"_construct_{object_json['type']}"
         method = getattr(self, method_name, self._not_implemented)
-        return method(object_json)
+        return method(object_json, space)
 
     def _get_asset(self, name_asset):
         for asset in self.assets:
@@ -104,10 +120,10 @@ class MapBuilder:
     def get_background(self):
         pass
 
-    def _not_implemented(self, object_json):
+    def _not_implemented(self, object_json, space):
         raise NotImplementedError(f"Type {object_json['type']} is not Implemented")
 
-    def _construct_sprite(self, object_json) -> PhysicObject:
+    def _construct_sprite(self, object_json, space) -> PhysicObject:
         if "asset" not in object_json:
             raise ValueError("Object Sprite must have asset(name to asset)")
 
@@ -116,12 +132,13 @@ class MapBuilder:
             raise ValueError(f"Not found asset {object_json['asset']}")
         return Sprite(
             path=asset['src'],
-            position=object_json["position"],
+            position=Vector2(object_json["position"]),
             width=object_json["size"][0],
-            height=object_json["size"][1]
+            height=object_json["size"][1],
+            space=space
         )
 
-    def _construct_rect(self, object_json) -> PhysicObject:
+    def _construct_rect(self, object_json, space) -> PhysicObject:
         if "color" not in object_json:
             raise ValueError("Object Sprite must have color(in format #000000)")
         return Rectangle(
@@ -129,4 +146,5 @@ class MapBuilder:
             width=object_json["size"][0],
             height=object_json["size"][1],
             color=object_json["color"],
+            space=space
         )
