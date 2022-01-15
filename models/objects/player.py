@@ -10,27 +10,13 @@ from models.objects.sprite import Sprite
 
 class Player(Sprite):
 
-    def block_move_start(self, data, space, other):
-        self.normal_collision = data.normal
-
-        return True
-
-    def block_move_end(self, data, space, other):
-        self.normal_collision = 0, 0
-        return True
-
-    @staticmethod
-    def player_dead(data, space, other):
-        from models.game_manager import GameManager
-        GameManager().end_game()
-
-        return True
-
     def __init__(self, path, position: Vector2, space, width=None, height=None,
                  velocity: Vector2 = Vector2(0, 0), collision_type=ColliderType.RECTANGLE):
         from models.game_manager import GameManager
         if GameManager().player is None:
             GameManager().player = self
+
+        self.move_speed = 300
 
         super().__init__(path, position, space, width, height, velocity, False, collision_type)
         self.body.elasticity = 1.0
@@ -48,9 +34,9 @@ class Player(Sprite):
     def run_events(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                self.velocity = Vector2(-300, 0)
+                self.velocity = Vector2(-self.move_speed, 0)
             if event.key == pygame.K_RIGHT:
-                self.velocity = Vector2(300, 0)
+                self.velocity = Vector2(self.move_speed, 0)
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
                 self.velocity = Vector2(0, 0)
@@ -67,3 +53,19 @@ class Player(Sprite):
     def draw(self, screen: Surface):
         super().draw(screen)
         self.block_move()
+
+    def block_move_start(self, data, space, other):
+        self.normal_collision = data.normal
+
+        return True
+
+    def block_move_end(self, data, space, other):
+        self.normal_collision = 0, 0
+        return True
+
+    @staticmethod
+    def player_dead(data, space, other):
+        from models.game_manager import GameManager
+        GameManager().end_game()
+
+        return True
