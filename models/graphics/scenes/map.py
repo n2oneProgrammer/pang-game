@@ -5,6 +5,7 @@ from models.enums.ColliderType import ColliderType
 from models.enums.ObjectsCollisionType import ObjectCollisionType
 from models.graphics.scenes.scene import Scene
 from models.map_builder import MapBuilder
+from models.objects.ball import Ball
 from models.objects.player import Player
 from models.objects.sprite import Sprite
 
@@ -18,16 +19,8 @@ class Map(Scene):
         self.map_builder = MapBuilder("test_map.map")
         self.objects = self.map_builder.get_elements(self.space)
 
-        # Create this ball is temporary(for testing)
-        # TODO: remove later
-        a = Sprite("ball.png", Vector2(400, 300), self.space, width=45, collision_type=ColliderType.CIRCLE)
-        a.body.body_type = pymunk.Body.DYNAMIC
-        a.body.velocity = 400, -300
-        list(a.body.shapes)[0].collision_type = ObjectCollisionType.BALL
-        b = Sprite("ball.png", Vector2(600, 300), self.space, width=45, collision_type=ColliderType.CIRCLE)
-        b.body.body_type = pymunk.Body.DYNAMIC
-        b.body.velocity = 300, 0
-        list(b.body.shapes)[0].collision_type = ObjectCollisionType.BALL
+        a = Ball("ball.png", Vector2(400, 300), self.space, 45 / 2, velocity=Vector2(-300, 20))
+        b = Ball("ball.png", Vector2(600, 300), self.space, 10, velocity=Vector2(300, 10))
 
         self.objects.append(a)
         self.objects.append(b)
