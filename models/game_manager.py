@@ -11,6 +11,11 @@ class GameManager(metaclass=Singleton):
 
         self._clock = pygame.time.Clock()
         self.screen = None
+        self.running = True
+        self.player = None
+
+    def end_game(self):
+        self.running = False
 
     def run(self):
         pygame.init()
@@ -19,12 +24,13 @@ class GameManager(metaclass=Singleton):
 
         scene = Map()
 
-        running = True
-        while running:
+        while self.running:
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
+                    self.running = False
+                elif self.player is not None:
+                    self.player.run_events(event)
             self.screen.fill((255, 255, 255))
             if self._clock.get_fps() == 0:
                 dt = 0
