@@ -40,3 +40,6 @@ class PhysicObject:
 
     def draw(self, screen: Surface):
         pass
+
+    def delete_self(self):
+        pass

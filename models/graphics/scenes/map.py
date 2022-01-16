@@ -19,16 +19,14 @@ class Map(Scene):
         self.map_builder = MapBuilder("test_map.map")
         self.objects = self.map_builder.get_elements(self.space)
 
-        a = Ball("ball.png", Vector2(400, 300), self.space, 45 / 2, velocity=Vector2(-300, 20))
-        b = Ball("ball.png", Vector2(600, 300), self.space, 10, velocity=Vector2(300, 10))
+        # a = Ball("ball.png", Vector2(400, 300), self.space, 45 / 2, velocity=Vector2(-300, 20))
+        # b = Ball("ball.png", Vector2(600, 300), self.space, 10, velocity=Vector2(300, 10))
 
-        self.objects.append(a)
-        self.objects.append(b)
+        # self.objects.append(a)
+        # self.objects.append(b)
 
         self.objects.append(Player("bob.png", Vector2(40, 460), self.space, height=100))
 
     def update(self, delta_time):
         self.space.step(delta_time)
-        for obj in self.objects:
-            from models.game_manager import GameManager
-            obj.draw(GameManager().screen)
+        super().update(delta_time)
