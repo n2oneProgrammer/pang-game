@@ -13,6 +13,7 @@ class GameManager(metaclass=Singleton):
         self.screen = None
         self.running = True
         self.player = None
+        self.scene = None
 
     def end_game(self):
         self.running = False
@@ -22,7 +23,7 @@ class GameManager(metaclass=Singleton):
 
         self.screen = pygame.display.set_mode([self.width, self.height])
 
-        scene = Map()
+        self.scene = Map()
 
         while self.running:
 
@@ -36,7 +37,7 @@ class GameManager(metaclass=Singleton):
                 dt = 0
             else:
                 dt = 1.0 / self._clock.get_fps()
-            scene.update(dt)
+            self.scene.update(dt)
             pygame.display.flip()
             self._clock.tick(60)
 

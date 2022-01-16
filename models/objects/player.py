@@ -5,6 +5,7 @@ from pygame.math import Vector2
 
 from models.enums.ColliderType import ColliderType
 from models.enums.ObjectsCollisionType import ObjectCollisionType
+from models.objects.chain_bullet import ChainBullet
 from models.objects.sprite import Sprite
 
 
@@ -37,6 +38,9 @@ class Player(Sprite):
                 self.velocity = Vector2(-self.move_speed, 0)
             if event.key == pygame.K_RIGHT:
                 self.velocity = Vector2(self.move_speed, 0)
+            if event.key == pygame.K_SPACE:
+                from models.game_manager import GameManager
+                GameManager().scene.bullets.append(ChainBullet(self.position + Vector2(0, self.height), self.space))
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
                 self.velocity = Vector2(0, 0)
