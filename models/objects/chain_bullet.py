@@ -36,10 +36,8 @@ class ChainBullet:
             for index, element in enumerate(self.chains_elements):
                 print((index % 2 == 0))
                 if self.start_img_1 != (index % 2 == 0):
-                    print("1")
                     element.change_img_src(self.chain_src_1)
                 else:
-                    print("2")
                     element.change_img_src(self.chain_src_2)
             self.start_img_1 = not self.start_img_1
         for element in self.chains_elements:
