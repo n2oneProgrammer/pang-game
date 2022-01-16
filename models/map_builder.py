@@ -5,6 +5,7 @@ from typing import List
 import pymunk
 from pygame.math import Vector2
 
+from models.enums.ObjectsCollisionType import ObjectCollisionType
 from models.objects.physic_objects import PhysicObject
 from models.objects.rectangle import Rectangle
 from models.objects.sprite import Sprite
@@ -97,7 +98,7 @@ class MapBuilder:
             poly.mass = 10
             poly.elasticity = 1
             poly.friction = 0
-
+            poly.collision_type = ObjectCollisionType.WALL
             space.add(body, poly)
             return result_list
 

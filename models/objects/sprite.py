@@ -19,6 +19,8 @@ class Sprite(PhysicObject):
 
         super().__init__(position, space, velocity, is_static, self.width, self.height, collision_type)
 
+        print(self.width, self.height)
+
         if self.collider_type == ColliderType.RECTANGLE:
             self.poly = pymunk.Poly.create_box(self.body, size=(self.width, self.height))
         elif self.collider_type == ColliderType.CIRCLE:
@@ -44,6 +46,7 @@ class Sprite(PhysicObject):
                 w = self.width
         elif self.height:
             w = w * self.height / h
+            h = self.height
 
         self.width = w
         self.height = h
