@@ -9,16 +9,19 @@ class ChainBullet:
     def __init__(self, position: Vector2, space):
         first_chain_element = Sprite("chain1.png", position, space, width=50, is_static=True,
                                      collision_type=ColliderType.RECTANGLE)
+
+        self.chain_src_1 = "chain1.png"
+        self.chain_src_2 = "chain2.png"
+        self.start_img_1 = True
+
         list(first_chain_element.body.shapes)[0].collision_type = ObjectCollisionType.CHAIN
         self.chains_elements = [first_chain_element]
         self.space = space
         self.height = first_chain_element.height
         self.last_position = position
         self.last_increasing = time.time()
-        self.chain_src_1 = "chain1.png"
-        self.chain_src_2 = "chain2.png"
-
-        self.start_img_1 = True
+        self.head = Sprite("chainhead.png", position, space, width=50, is_static=True,
+                           collision_type=ColliderType.RECTANGLE)
 
     def draw(self, screen: Surface):
         if self.last_position[1] < 0:
@@ -38,6 +41,9 @@ class ChainBullet:
             self.start_img_1 = not self.start_img_1
         for element in self.chains_elements:
             element.draw(screen)
+
+        self.head.position = self.last_position - Vector2(0, self.head.height)
+        self.head.draw(screen)
 
     def increase_chain(self):
         self.last_position -= Vector2(0, self.height)
