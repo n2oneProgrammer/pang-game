@@ -1,7 +1,7 @@
 import time
+
 from pygame import Vector2, Surface
 
-import models.game_manager
 from models.enums.ColliderType import ColliderType
 from models.enums.ObjectsCollisionType import ObjectCollisionType
 from models.objects.sprite import Sprite
@@ -41,7 +41,8 @@ class ChainBullet:
                         break
 
             if s.collision_type == ObjectCollisionType.BALL:
-                for obj in models.game_manager.GameManager().scene.objects:
+                from models.game_manager import GameManager
+                for obj in GameManager().scene.objects:
                     shape = list(obj.body.shapes)[0]
                     if shape is s:
                         obj.split()
