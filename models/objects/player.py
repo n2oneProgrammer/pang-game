@@ -1,3 +1,5 @@
+import time
+
 import pygame
 import pymunk
 from pygame import Surface
@@ -7,23 +9,54 @@ from models.enums.ColliderType import ColliderType
 from models.enums.ObjectsCollisionType import ObjectCollisionType
 from models.objects.chain_bullet import ChainBullet
 from models.objects.sprite import Sprite
+from models.utils.animation import Animation
 
 
 class Player(Sprite):
 
-    def __init__(self, path, position: Vector2, space, width=None, height=None,
+    def __init__(self, position: Vector2, space, width=None, height=None,
                  velocity: Vector2 = Vector2(0, 0), collision_type=ColliderType.RECTANGLE):
+
         from models.game_manager import GameManager
         if GameManager().player is None:
             GameManager().player = self
 
         self.move_speed = 300
+        self.time_shoot_animation = 0.3
+        self.player_anim_walk_speed = 0.1
+        self.player_anim_shoot_speed = 0.2
 
-        super().__init__(path, position, space, width, height, velocity, False, collision_type)
+        super().__init__("player_state/0.png", position, space, width, height, velocity, False, collision_type)
         self.body.elasticity = 1.0
         self.body.body_type = pymunk.Body.KINEMATIC
         list(self.body.shapes)[0].collision_type = ObjectCollisionType.PLAYER
         self.normal_collision = 0, 0
+
+        self.animation_idle = Animation(
+            self,
+            ["player_state/0.png"],
+            self.time_shoot_animation
+        )
+
+        self.animation_left = Animation(
+            self,
+            ["player_state/-1.png", "player_state/-2.png", "player_state/-3.png"],
+            self.player_anim_walk_speed
+        )
+
+        self.animation_right = Animation(
+            self,
+            ["player_state/1.png", "player_state/2.png", "player_state/3.png"],
+            self.player_anim_walk_speed
+        )
+
+        self.animation_shoot = Animation(
+            self,
+            ["player_state/bob-strzelanie.png"],
+            self.player_anim_shoot_speed
+        )
+
+        self.last_shoot = 0
 
         move_collision_handler = space.add_collision_handler(ObjectCollisionType.PLAYER, ObjectCollisionType.WALL)
         move_collision_handler.begin = self.block_move_start
@@ -39,8 +72,10 @@ class Player(Sprite):
             if event.key == pygame.K_RIGHT:
                 self.velocity = Vector2(self.move_speed, 0)
             if event.key == pygame.K_SPACE:
+                self.velocity = Vector2(0, 0)
                 from models.game_manager import GameManager
                 GameManager().scene.bullets.append(ChainBullet(self.position + Vector2(0, self.height), self.space))
+                self.last_shoot = time.time()
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
                 self.velocity = Vector2(0, 0)
@@ -57,10 +92,22 @@ class Player(Sprite):
     def draw(self, screen: Surface):
         super().draw(screen)
         self.block_move()
+        self.animation_controller()
+
+    def animation_controller(self):
+        if time.time() - self.last_shoot < self.time_shoot_animation:
+            self.animation_shoot.change_enabled(True)
+            self.animation_shoot.update()
+        else:
+            self.animation_left.change_enabled(self.velocity[0] < 0)
+            self.animation_idle.change_enabled(self.velocity[0] == 0)
+            self.animation_right.change_enabled(self.velocity[0] > 0)
+            self.animation_left.update()
+            self.animation_idle.update()
+            self.animation_right.update()
 
     def block_move_start(self, data, space, other):
         self.normal_collision = data.normal
-
         return True
 
     def block_move_end(self, data, space, other):

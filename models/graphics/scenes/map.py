@@ -25,7 +25,7 @@ class Map(Scene):
         # self.objects.append(a)
         # self.objects.append(b)
 
-        self.objects.append(Player("bob.png", Vector2(40, 460), self.space, height=100))
+        self.objects.append(Player(Vector2(40, 460), self.space, height=100))
 
     def update(self, delta_time):
         self.space.step(delta_time)
