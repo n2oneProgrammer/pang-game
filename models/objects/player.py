@@ -23,6 +23,8 @@ class Player(Sprite):
 
         self.move_speed = 300
         self.time_shoot_animation = 0.3
+        self.player_anim_walk_speed = 0.1
+        self.player_anim_shoot_speed = 0.2
 
         super().__init__("player_state/0.png", position, space, width, height, velocity, False, collision_type)
         self.body.elasticity = 1.0
@@ -33,25 +35,25 @@ class Player(Sprite):
         self.animation_idle = Animation(
             self,
             ["player_state/0.png"],
-            0.1
+            self.time_shoot_animation
         )
 
         self.animation_left = Animation(
             self,
             ["player_state/-1.png", "player_state/-2.png", "player_state/-3.png"],
-            0.1
+            self.player_anim_walk_speed
         )
 
         self.animation_right = Animation(
             self,
             ["player_state/1.png", "player_state/2.png", "player_state/3.png"],
-            0.1
+            self.player_anim_walk_speed
         )
 
         self.animation_shoot = Animation(
             self,
             ["player_state/bob-strzelanie.png"],
-            0.2
+            self.player_anim_shoot_speed
         )
 
         self.last_shoot = 0

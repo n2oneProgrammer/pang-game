@@ -34,7 +34,6 @@ class ChainBullet:
             self.increase_chain()
 
             for index, element in enumerate(self.chains_elements):
-                print((index % 2 == 0))
                 if self.start_img_1 != (index % 2 == 0):
                     element.change_img_src(self.chain_src_1)
                 else:
