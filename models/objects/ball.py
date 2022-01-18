@@ -37,9 +37,9 @@ class Ball(Sprite):
         x_velocity = new_velocity * math.sin(self.ANGLE_SPLIT_BALL)
         y_velocity = new_velocity * math.cos(self.ANGLE_SPLIT_BALL)
 
-        ball1 = Ball(self.path[7:], self.position - Vector2(self.width / 2, 0), self.space, self.width / 4,
+        ball1 = Ball(self.path[7:], self.position - Vector2(self.width / 4, 0), self.space, self.width / 4,
                      velocity=Vector2(-x_velocity, -y_velocity))
-        ball2 = Ball(self.path[7:], self.position + Vector2(self.width / 2, 0), self.space, self.width / 4,
+        ball2 = Ball(self.path[7:], self.position + Vector2(self.width / 4, 0), self.space, self.width / 4,
                      velocity=Vector2(x_velocity, -y_velocity))
 
         GameManager().scene.objects.append(ball1)

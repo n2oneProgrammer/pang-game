@@ -24,7 +24,7 @@ class PhysicObjectTest(unittest.TestCase):
         physic_object = PhysicObject(Vector2(10, 10), None, velocity=Vector2(30, 10), is_static=False)
         self.assertEqual(physic_object.velocity, Vector2(30, 10))
 
-    def test_position_set(self):
+    def test_velocity_set(self):
         physic_object = PhysicObject(Vector2(10, 10), None, velocity=Vector2(10, 20))
         physic_object.velocity = Vector2(20, 20)
         self.assertEqual(physic_object.body.velocity, (20, 20))
