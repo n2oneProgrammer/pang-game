@@ -1,5 +1,7 @@
 import time
+
 from pygame import Vector2, Surface
+
 from models.enums.ColliderType import ColliderType
 from models.enums.ObjectsCollisionType import ObjectCollisionType
 from models.objects.sprite import Sprite
@@ -26,6 +28,27 @@ class ChainBullet:
         self.head = Sprite(self.chain_head_src, position, space, width=self.width, is_static=True,
                            collision_type=ColliderType.RECTANGLE)
 
+        hit_collision_handler = space.add_collision_handler(ObjectCollisionType.CHAIN, ObjectCollisionType.BALL)
+        hit_collision_handler.begin = self.hit_ball
+
+    def hit_ball(self, data, space, other):
+        for s in data.shapes:
+            if s.collision_type == ObjectCollisionType.CHAIN:
+                for obj in self.chains_elements:
+                    shape = list(obj.body.shapes)[0]
+                    if shape is s:
+                        self.delete_self()
+                        break
+
+            if s.collision_type == ObjectCollisionType.BALL:
+                from models.game_manager import GameManager
+                for obj in GameManager().scene.objects:
+                    shape = list(obj.body.shapes)[0]
+                    if shape is s:
+                        obj.split()
+                        break
+        return True
+
     def draw(self, screen: Surface):
         if self.last_position[1] < 0:
             self.delete_self()
@@ -47,13 +70,16 @@ class ChainBullet:
 
     def increase_chain(self):
         self.last_position -= Vector2(0, self.height)
-        self.chains_elements.append(
-            Sprite(self.chain_src_1, self.last_position, self.space, width=self.width, is_static=True,
-                   collision_type=ColliderType.RECTANGLE))
+
+        chain_element = Sprite(self.chain_src_1, self.last_position, self.space, width=self.width, is_static=True,
+                               collision_type=ColliderType.RECTANGLE)
+        list(chain_element.body.shapes)[0].collision_type = ObjectCollisionType.CHAIN
+        self.chains_elements.append(chain_element)
 
     def delete_self(self):
         for element in self.chains_elements:
             self.space.remove(list(element.body.shapes)[0], element.body)
 
         from models.game_manager import GameManager
-        GameManager().scene.bullets.remove(self)
+        if self in GameManager().scene.bullets:
+            GameManager().scene.bullets.remove(self)
