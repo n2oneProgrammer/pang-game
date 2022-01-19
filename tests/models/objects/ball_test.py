@@ -98,10 +98,10 @@ class BallSplitTest(unittest.TestCase):
         self.ball.split()
 
         self.assertEqual(len(GameManager().scene.objects), 2)
-        self.assertAlmostEqual(-362.077, GameManager().scene.objects[0].velocity.x, 3)
-        self.assertAlmostEqual(-209.045, GameManager().scene.objects[0].velocity.y, 3)
-        self.assertAlmostEqual(362.077, GameManager().scene.objects[1].velocity.x, 3)
-        self.assertAlmostEqual(-209.045, GameManager().scene.objects[1].velocity.y, 3)
+        self.assertAlmostEqual(-63.640, GameManager().scene.objects[0].velocity.x, 3)
+        self.assertAlmostEqual(-36.742, GameManager().scene.objects[0].velocity.y, 3)
+        self.assertAlmostEqual(63.640, GameManager().scene.objects[1].velocity.x, 3)
+        self.assertAlmostEqual(-36.742, GameManager().scene.objects[1].velocity.y, 3)
 
     def stop_creating_small_balls_when_too_small_test(self):
         from models.game_manager import GameManager
