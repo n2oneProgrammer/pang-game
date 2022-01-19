@@ -1,8 +1,7 @@
 import os.path
 import unittest
-from unittest.mock import Mock, MagicMock
+from unittest.mock import Mock
 
-import pygame.image
 import pymunk
 from pygame import Vector2
 
