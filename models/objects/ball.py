@@ -17,7 +17,10 @@ class Ball(Sprite):
                  velocity: Vector2 = Vector2(0, 0),
                  is_static: bool = False, is_child_ball=False):
         super().__init__(path, position, space, 2 * radius, 2 * radius, velocity, is_static, ColliderType.CIRCLE)
-        list(self.body.shapes)[0].collision_type = ObjectCollisionType.BALL
+        shape = list(self.body.shapes)[0]
+        shape.collision_type = ObjectCollisionType.BALL
+        shape.filter = pymunk.ShapeFilter(categories=ObjectCollisionType.BALL,
+                                          mask=pymunk.ShapeFilter.ALL_MASKS() ^ ObjectCollisionType.BALL)
         self.is_child_ball = is_child_ball
 
     def split(self):
