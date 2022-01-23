@@ -13,7 +13,7 @@ class Ball(Sprite):
     PERCENT_LOSS_ENERGY = 3 / 10
     ANGLE_SPLIT_BALL = 60 * math.pi / 180
     MIN_RADIUS = 10
-    SPEED_ENERGY_LOSS = 1/20
+    SPEED_ENERGY_LOSS = 1 / 20
 
     def __init__(self, path, position: Vector2, space, radius,
                  velocity: Vector2 = Vector2(0, 0),
