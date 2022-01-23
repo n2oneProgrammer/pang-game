@@ -20,10 +20,11 @@ class Map(Scene):
         self.objects = self.map_builder.get_elements(self.space)
 
         a = Ball("ball.png", Vector2(400, 300), self.space, 90 / 2, velocity=Vector2(150, 0))
+        b = Ball("ball.png", Vector2(600, 300), self.space, 90 / 2, velocity=Vector2(150, 0))
         # b = Ball("ball.png", Vector2(600, 300), self.space, 10, velocity=Vector2(300, 10))
 
         self.objects.append(a)
-        # self.objects.append(b)
+        self.objects.append(b)
 
         self.objects.append(Player(Vector2(40, 460), self.space, height=100))
 

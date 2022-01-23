@@ -21,6 +21,7 @@ class Player(Sprite):
         if GameManager().player is None:
             GameManager().player = self
 
+        self.player_lives = 5
         self.move_speed = 300
         self.time_shoot_animation = 0.3
         self.player_anim_walk_speed = 0.1
@@ -29,7 +30,10 @@ class Player(Sprite):
         super().__init__("player_state/0.png", position, space, width, height, velocity, False, collision_type)
         self.body.elasticity = 1.0
         self.body.body_type = pymunk.Body.KINEMATIC
-        list(self.body.shapes)[0].collision_type = ObjectCollisionType.PLAYER
+        shape = list(self.body.shapes)[0]
+        shape.collision_type = ObjectCollisionType.PLAYER
+        shape.filter = pymunk.ShapeFilter(categories=ObjectCollisionType.PLAYER,
+                                          mask=pymunk.ShapeFilter.ALL_MASKS())
         self.normal_collision = 0, 0
 
         self.animation_idle = Animation(
@@ -114,9 +118,12 @@ class Player(Sprite):
         self.normal_collision = 0, 0
         return True
 
-    @staticmethod
-    def player_dead(data, space, other):
-        from models.game_manager import GameManager
-        GameManager().end_game()
+    def player_dead(self, data, space, other):
+        self.player_lives -= 1
+        print("You have ", self.player_lives)
+        if self.player_lives <= 0:
+            print("YOU DIED")
 
-        return True
+            from models.game_manager import GameManager
+            GameManager().end_game()
+        return False
