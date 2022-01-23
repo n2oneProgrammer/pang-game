@@ -1,7 +1,8 @@
 import math
+import time
 
 import pymunk
-from pygame import Vector2
+from pygame import Vector2, Surface
 
 from models.enums.ColliderType import ColliderType
 from models.enums.ObjectsCollisionType import ObjectCollisionType
@@ -12,6 +13,7 @@ class Ball(Sprite):
     PERCENT_LOSS_ENERGY = 3 / 10
     ANGLE_SPLIT_BALL = 60 * math.pi / 180
     MIN_RADIUS = 10
+    SPEED_ENERGY_LOSS = 1/20
 
     def __init__(self, path, position: Vector2, space, radius,
                  velocity: Vector2 = Vector2(0, 0),
@@ -22,6 +24,13 @@ class Ball(Sprite):
         shape.filter = pymunk.ShapeFilter(categories=ObjectCollisionType.BALL,
                                           mask=pymunk.ShapeFilter.ALL_MASKS() ^ ObjectCollisionType.BALL)
         self.is_child_ball = is_child_ball
+        self.last_loop = time.time()
+
+    def draw(self, screen: Surface):
+        super(Ball, self).draw(screen)
+        if self.is_child_ball:
+            self.velocity *= 1 - (self.SPEED_ENERGY_LOSS * (time.time() - self.last_loop))
+        self.last_loop = time.time()
 
     def split(self):
         self.space.remove(list(self.body.shapes)[0], self.body)

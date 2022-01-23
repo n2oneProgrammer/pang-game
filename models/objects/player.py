@@ -116,7 +116,7 @@ class Player(Sprite):
 
     @staticmethod
     def player_dead(data, space, other):
-        from models.game_manager import GameManager
-        GameManager().end_game()
-
+        # from models.game_manager import GameManager
+        # GameManager().end_game()
+        print("AAAAAAAAAAAAAAAAAAAAAAAAAA")
         return True
