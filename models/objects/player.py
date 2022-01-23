@@ -119,8 +119,6 @@ class Player(Sprite):
         return True
 
     def player_dead(self, data, space, other):
-        # from models.game_manager import GameManager
-        # GameManager().end_game()
         self.player_lives -= 1
         print("You have ", self.player_lives)
         if self.player_lives <= 0:
