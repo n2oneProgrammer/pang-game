@@ -16,6 +16,10 @@
     {
       "name": "wall3.2",
       "src": "wall3.2.png"
+    },
+    {
+      "name": "ball",
+      "src": "ball.png"
     }
   ],
   "map": [
@@ -73,6 +77,23 @@
     {
       "type": "sprite",
       "asset": "wall3.2",
+      "stretch": "yes",
+      "start-position": [
+        760,
+        0
+      ],
+      "end-position": [
+        760,
+        560
+      ],
+      "size": [
+        40,
+        40
+      ]
+    },
+    {
+      "type": "sprite",
+      "asset": "ball",
       "stretch": "yes",
       "start-position": [
         760,
