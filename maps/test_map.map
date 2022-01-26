@@ -1,5 +1,12 @@
 {
   "background": "background.png",
+  "player": {
+    "start_position": [
+      40,
+      460
+    ],
+    "lives": 3
+  },
   "assets": [
     {
       "name": "wall1",

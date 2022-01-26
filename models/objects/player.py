@@ -15,13 +15,13 @@ from models.utils.animation import Animation
 class Player(Sprite):
 
     def __init__(self, position: Vector2, space, width=None, height=None,
-                 velocity: Vector2 = Vector2(0, 0), collision_type=ColliderType.RECTANGLE):
+                 velocity: Vector2 = Vector2(0, 0), collision_type=ColliderType.RECTANGLE, lives=5):
 
         from models.game_manager import GameManager
         if GameManager().player is None:
             GameManager().player = self
 
-        self.player_lives = 5
+        self.player_lives = lives
         self.move_speed = 300
         self.time_shoot_animation = 0.3
         self.player_anim_walk_speed = 0.1

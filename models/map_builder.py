@@ -9,6 +9,7 @@ from pygame.math import Vector2
 from models.enums.ObjectsCollisionType import ObjectCollisionType
 from models.objects.ball import Ball
 from models.objects.physic_objects import PhysicObject
+from models.objects.player import Player
 from models.objects.rectangle import Rectangle
 from models.objects.sprite import Sprite
 
@@ -24,9 +25,10 @@ class MapBuilder:
 
     def get_elements(self, space) -> List[PhysicObject]:
         self.load_assets()
+
+        elements: List[PhysicObject] = [self.create_player(space)]
         with open(self.src_map, "r") as map_source_file:
             map_source = json.load(map_source_file)
-            elements: List[PhysicObject] = []
             if "map" in map_source:
                 for element in map_source["map"]:
                     elements.extend(self.construct_object(element, space))
@@ -42,6 +44,23 @@ class MapBuilder:
             if "assets" in map_source:
                 for asset in map_source["assets"]:
                     self.assets.append(self.construct_asset(asset))
+
+    def create_player(self, space):
+        with open(self.src_map, "r") as map_source_file:
+            map_source = json.load(map_source_file)
+
+            if "player" not in map_source:
+                raise ValueError("Map JSON must have player")
+
+            player_settings = map_source['player']
+            if "start_position" not in player_settings:
+                raise ValueError("Player must have start_position")
+
+            if "lives" not in player_settings:
+                raise ValueError("Player must have lives")
+
+            return Player(Vector2(player_settings['start_position'][0], player_settings['start_position'][1]), space,
+                          height=100, lives=player_settings['lives'])
 
     @staticmethod
     def construct_asset(asset_json) -> object:
