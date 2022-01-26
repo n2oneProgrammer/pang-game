@@ -92,20 +92,16 @@
       ]
     },
     {
-      "type": "sprite",
+      "type": "ball",
       "asset": "ball",
-      "stretch": "yes",
-      "start-position": [
-        760,
-        0
+      "position": [
+        50,
+        50
       ],
-      "end-position": [
-        760,
-        560
-      ],
-      "size": [
-        40,
-        40
+      "radius": 30,
+      "start_velocity": [
+        50,
+        -10
       ]
     }
   ]

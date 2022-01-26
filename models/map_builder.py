@@ -6,6 +6,7 @@ import pymunk
 from pygame.math import Vector2
 
 from models.enums.ObjectsCollisionType import ObjectCollisionType
+from models.objects.ball import Ball
 from models.objects.physic_objects import PhysicObject
 from models.objects.rectangle import Rectangle
 from models.objects.sprite import Sprite
@@ -51,7 +52,7 @@ class MapBuilder:
     def construct_object(self, object_json, space) -> List[PhysicObject]:
         if "type" not in object_json:
             raise ValueError("Object must have type")
-        if "size" not in object_json:
+        if "size" not in object_json and object_json['type'] not in ["ball"]:
             raise ValueError("Object Sprite must have size")
 
         if "stretch" in object_json and object_json["stretch"]:
@@ -148,4 +149,23 @@ class MapBuilder:
             height=object_json["size"][1],
             color=object_json["color"],
             space=space
+        )
+
+    def _construct_ball(self, object_json, space) -> PhysicObject:
+        if "asset" not in object_json:
+            raise ValueError("Object Sprite must have asset(name to asset)")
+
+        asset = self._get_asset(object_json["asset"])
+        if asset is None:
+            raise ValueError(f"Not found asset {object_json['asset']}")
+
+        if "start_velocity" not in object_json:
+            raise ValueError("Ball must have start velocity")
+
+        return Ball(
+            path=asset['src'],
+            position=Vector2(object_json["position"]),
+            radius=object_json['radius'],
+            space=space,
+            velocity=Vector2(object_json['start_velocity'])
         )

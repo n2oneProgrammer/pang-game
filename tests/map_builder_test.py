@@ -197,7 +197,8 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
         map_object = {
             "type": "ball",
             "position": [0, 0],
-            "radius": 10
+            "radius": 10,
+            "start_velocity": [0, 0]
         }
 
         with self.assertRaises(ValueError):
@@ -207,7 +208,8 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
         map_object = {
             "type": "ball",
             "asset": "asset name",
-            "radius": 10
+            "radius": 10,
+            "start_velocity": [0, 0]
         }
 
         with self.assertRaises(ValueError):
@@ -217,7 +219,19 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
         map_object = {
             "type": "ball",
             "asset": "asset name",
-            "position": [0, 0]
+            "position": [0, 0],
+            "start_velocity": [0, 0]
+        }
+
+        with self.assertRaises(ValueError):
+            self.map_builder.construct_object(map_object, None)
+
+    def test_type_ball_require_no_start_velocity(self):
+        map_object = {
+            "type": "ball",
+            "asset": "asset name",
+            "position": [0, 0],
+            "radius": 10
         }
 
         with self.assertRaises(ValueError):
@@ -228,7 +242,8 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
             "type": "ball",
             "asset": "asset name",
             "position": [0, 0],
-            "radius": 10
+            "radius": 10,
+            "start_velocity": [0, 0]
         }
         self.map_builder.assets = []
 
@@ -239,7 +254,8 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
             "type": "ball",
             "asset": "asset name",
             "position": [0, 0],
-            "radius": 10
+            "radius": 10,
+            "start_velocity": [20, -10]
         }
         self.map_builder.assets = [
             {"name": "asset name", "src": "random_sprite.png"}
@@ -251,6 +267,8 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
         result = result[0]
         self.assertIsInstance(result, Ball)
         self.assertEqual(result.width, 20)
+        self.assertEqual(result.velocity.x, 20)
+        self.assertEqual(result.velocity.y, -10)
         self.assertEqual(os.path.normpath(result.path), os.path.normpath("assets/random_sprite.png"))
 
     # STRETCH OPTIONS
