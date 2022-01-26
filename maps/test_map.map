@@ -1,5 +1,12 @@
 {
-  "background": "#000000",
+  "background": "background.png",
+  "player": {
+    "start_position": [
+      40,
+      460
+    ],
+    "lives": 3
+  },
   "assets": [
     {
       "name": "wall1",
@@ -16,6 +23,10 @@
     {
       "name": "wall3.2",
       "src": "wall3.2.png"
+    },
+    {
+      "name": "ball",
+      "src": "ball.png"
     }
   ],
   "map": [
@@ -85,6 +96,19 @@
       "size": [
         40,
         40
+      ]
+    },
+    {
+      "type": "ball",
+      "asset": "ball",
+      "position": [
+        50,
+        50
+      ],
+      "radius": 30,
+      "start_velocity": [
+        50,
+        -10
       ]
     }
   ]

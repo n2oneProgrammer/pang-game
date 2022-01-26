@@ -2,25 +2,33 @@ import json
 import os
 from typing import List
 
+import pygame
 import pymunk
 from pygame.math import Vector2
 
 from models.enums.ObjectsCollisionType import ObjectCollisionType
+from models.objects.ball import Ball
 from models.objects.physic_objects import PhysicObject
+from models.objects.player import Player
 from models.objects.rectangle import Rectangle
 from models.objects.sprite import Sprite
 
 
 class MapBuilder:
     def __init__(self, src_map):
+        self.background_color = None
+        self.background_image = None
+        self.window_width = 800
+        self.window_height = 600
         self.src_map = os.path.join("maps", src_map)
         self.assets = []
 
     def get_elements(self, space) -> List[PhysicObject]:
         self.load_assets()
+
+        elements: List[PhysicObject] = [self.create_player(space)]
         with open(self.src_map, "r") as map_source_file:
             map_source = json.load(map_source_file)
-            elements: List[PhysicObject] = []
             if "map" in map_source:
                 for element in map_source["map"]:
                     elements.extend(self.construct_object(element, space))
@@ -37,6 +45,23 @@ class MapBuilder:
                 for asset in map_source["assets"]:
                     self.assets.append(self.construct_asset(asset))
 
+    def create_player(self, space):
+        with open(self.src_map, "r") as map_source_file:
+            map_source = json.load(map_source_file)
+
+            if "player" not in map_source:
+                raise ValueError("Map JSON must have player")
+
+            player_settings = map_source['player']
+            if "start_position" not in player_settings:
+                raise ValueError("Player must have start_position")
+
+            if "lives" not in player_settings:
+                raise ValueError("Player must have lives")
+
+            return Player(Vector2(player_settings['start_position'][0], player_settings['start_position'][1]), space,
+                          height=100, lives=player_settings['lives'])
+
     @staticmethod
     def construct_asset(asset_json) -> object:
         if "name" not in asset_json or type(asset_json["name"]) is not str:
@@ -51,7 +76,7 @@ class MapBuilder:
     def construct_object(self, object_json, space) -> List[PhysicObject]:
         if "type" not in object_json:
             raise ValueError("Object must have type")
-        if "size" not in object_json:
+        if "size" not in object_json and object_json['type'] not in ["ball"]:
             raise ValueError("Object Sprite must have size")
 
         if "stretch" in object_json and object_json["stretch"]:
@@ -118,9 +143,6 @@ class MapBuilder:
                 return asset
         return None
 
-    def get_background(self):
-        pass
-
     def _not_implemented(self, object_json, space):
         raise NotImplementedError(f"Type {object_json['type']} is not Implemented")
 
@@ -149,3 +171,42 @@ class MapBuilder:
             color=object_json["color"],
             space=space
         )
+
+    def _construct_ball(self, object_json, space) -> PhysicObject:
+        if "asset" not in object_json:
+            raise ValueError("Object Sprite must have asset(name to asset)")
+
+        asset = self._get_asset(object_json["asset"])
+        if asset is None:
+            raise ValueError(f"Not found asset {object_json['asset']}")
+
+        if "start_velocity" not in object_json:
+            raise ValueError("Ball must have start velocity")
+
+        return Ball(
+            path=asset['src'],
+            position=Vector2(object_json["position"]),
+            radius=object_json['radius'],
+            space=space,
+            velocity=Vector2(object_json['start_velocity'])
+        )
+
+    def load_background(self):
+        with open(self.src_map, "r") as map_source_file:
+            map_source = json.load(map_source_file)
+
+            if "background" in map_source:
+                if map_source['background'].startswith("#"):
+                    self.background_color = map_source['background']
+                else:
+                    path = os.path.join('assets', map_source['background'])
+                    loaded_img = pygame.image.load(path)
+                    self.background_image = pygame.transform.scale(loaded_img, (self.window_width, self.window_height))
+            else:
+                raise ValueError("Map JSON must have background")
+
+    def draw_background(self, screen):
+        if self.background_color is not None:
+            screen.fill(self.background_color)
+        if self.background_image is not None:
+            screen.blit(self.background_image, Vector2(0, 0))

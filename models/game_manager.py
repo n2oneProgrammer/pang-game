@@ -32,7 +32,6 @@ class GameManager(metaclass=Singleton):
                     self.running = False
                 elif self.player is not None:
                     self.player.run_events(event)
-            self.screen.fill((255, 255, 255))
             if self._clock.get_fps() == 0:
                 dt = 0
             else:
