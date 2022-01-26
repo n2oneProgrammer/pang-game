@@ -3,6 +3,7 @@ import os
 import unittest
 from unittest.mock import Mock, patch, mock_open, MagicMock
 
+import pygame.image
 from pygame.math import Vector2
 
 from models.map_builder import MapBuilder
@@ -75,7 +76,6 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
 
         with self.assertRaises(NotImplementedError):
             self.map_builder.construct_object(map_object, None)
-
 
     # STRETCH OPTIONS
     def test_stretch_require_no_start_position(self):
@@ -201,6 +201,31 @@ class MapBuilderGetElementsTest(unittest.TestCase):
             self.map_builder.load_assets = Mock()
             self.map_builder.assets = []
             self.assertRaises(ValueError, self.map_builder.get_elements, None)
+
+    def test_load_background_solid_color(self):
+        map_source = json.dumps({
+            "assets": [],
+            "background": "#111111"
+        })
+        with patch("builtins.open", mock_open(read_data=map_source)):
+            self.map_builder.load_background()
+
+            self.assertEqual(self.map_builder.background_color, "#111111")
+            self.assertEqual(self.map_builder.background_image, None)
+
+    def test_load_background_img(self):
+        map_source = json.dumps({
+            "assets": [],
+            "background": "background.png"
+        })
+        with patch("builtins.open", mock_open(read_data=map_source)):
+            pygame.image.load = Mock()
+            pygame.transform.scale = Mock(return_value="image")
+
+            self.map_builder.load_background()
+
+            self.assertEqual(self.map_builder.background_color, None)
+            self.assertEqual(self.map_builder.background_image, "image")
 
     def test_load_all_elements(self):
         map_source = json.dumps({

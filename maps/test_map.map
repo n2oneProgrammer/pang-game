@@ -1,5 +1,5 @@
 {
-  "background": "#000000",
+  "background": "background.png",
   "assets": [
     {
       "name": "wall1",

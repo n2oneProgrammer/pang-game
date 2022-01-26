@@ -7,6 +7,7 @@ class Scene:
 
         from models.game_manager import GameManager
         screen = GameManager().screen
+
         for bullet in self.bullets:
             bullet.draw(screen)
 
