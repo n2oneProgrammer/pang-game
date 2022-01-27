@@ -49,7 +49,7 @@ Ma typ listy elementów Każdy z elementów ma atrubuty:
 
 ## player
 
-Jest to obiekt zawierający dane o graczu. Musi posiadać atrybuty start_position i lives
+Jest to obiekt zawierający dane o graczu.Gracz ma wysokośc 100. Musi posiadać atrybuty start_position i lives
 
 1. start_position - pozycja początkowa gracza 2 elementowa lista z liczbami [x,y]
 2. lives - LIczba reprezentująca dostępne życia gracza na danej mapie
