@@ -46,6 +46,8 @@ Ma typ listy elementów Każdy z elementów ma atrubuty:
    przedziale ( wymaga atrybutów start-position, end-position)
 6. start-position - pozycja zaczęcia rozkładania obiektów jako 2 elementowa lista z liczbami [x,y]
 7. end-position - pozycja zakończenia rozkładania obiektów jako 2 elementowa lista z liczbami [x,y]
+8. radius - promień kuli jako liczba
+9. start_velocity - prędkość początkowa jako 2 elementowa liczba [x,y]
 
 ## player
 
