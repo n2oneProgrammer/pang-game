@@ -4,7 +4,7 @@ Jest to plik, ustawienie elementów na mapie.<br />
 Wielkość podstawowa mapy to 800x600. I z tej wielkości elementy są przeskalowywane.<br/>
 Jest to plik tekstowy o struktukturze pliku json.<br/>
 Wszystkie ścieżki zaczynają się od folderu assets.<br/>
-Posiada on 3 atrybuty:
+Posiada on 4 atrybuty:
 
 1. background
 2. assets
@@ -51,7 +51,7 @@ Ma typ listy elementów Każdy z elementów ma atrubuty:
 
 ## player
 
-Jest to obiekt zawierający dane o graczu. Musi posiadać atrybuty start_position i lives
+Jest to obiekt zawierający dane o graczu.Gracz ma wysokośc 100. Musi posiadać atrybuty start_position i lives
 
 1. start_position - pozycja początkowa gracza 2 elementowa lista z liczbami [x,y]
 2. lives - LIczba reprezentująca dostępne życia gracza na danej mapie
