@@ -4,7 +4,12 @@ Jest to plik, ustawienie elementów na mapie.<br />
 Wielkość podstawowa mapy to 800x600. I z tej wielkości elementy są przeskalowywane.<br/>
 Jest to plik tekstowy o struktukturze pliku json.<br/>
 Wszystkie ścieżki zaczynają się od folderu assets.<br/>
-Posiada on 3 atrybuty 1.background 2.assets 3.map
+Posiada on 3 atrybuty:
+
+1. background
+2. assets
+3. map
+4. player
 
 ## background
 
@@ -29,6 +34,7 @@ Ma typ listy elementów Każdy z elementów ma atrubuty:
 1. type - typ tekstowy ( string ), posiada 2 wartości:
     1. sprite - tworzy object typu obrazkowego (wymagane atrybuty asset, position, size)
     2. rect - tworzy object prostokąt ( wymagane atrybuty color, position, size)
+    3. ball = tworzy object piłki ( wymagane atrybuty asset, position, radius, start_velocity)
 2. asset - typ tekstowy ( string ), odnośnik do assetu po nazwie
 3. position - pozycja objektu jako 2 elementowa lista z liczbami [x,y] lewego górnego rogu objektu. Punkt (0,0) jest w
    lewym górnym regu ekranu i wzrasta do prawego dolnego rogu
@@ -40,6 +46,15 @@ Ma typ listy elementów Każdy z elementów ma atrubuty:
    przedziale ( wymaga atrybutów start-position, end-position)
 6. start-position - pozycja zaczęcia rozkładania obiektów jako 2 elementowa lista z liczbami [x,y]
 7. end-position - pozycja zakończenia rozkładania obiektów jako 2 elementowa lista z liczbami [x,y]
+
+## player
+
+Jest to obiekt zawierający dane o graczu. Musi posiadać atrybuty start_position i lives
+
+1. start_position - pozycja początkowa gracza 2 elementowa lista z liczbami [x,y]
+2. lives - LIczba reprezentująca dostępne życia gracza na danej mapie
+
+
 
 
 
