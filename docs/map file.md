@@ -4,7 +4,7 @@ Jest to plik, ustawienie elementów na mapie.<br />
 Wielkość podstawowa mapy to 800x600. I z tej wielkości elementy są przeskalowywane.<br/>
 Jest to plik tekstowy o struktukturze pliku json.<br/>
 Wszystkie ścieżki zaczynają się od folderu assets.<br/>
-Posiada on 3 atrybuty:
+Posiada on 4 atrybuty:
 
 1. background
 2. assets
