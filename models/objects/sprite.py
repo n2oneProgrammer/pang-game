@@ -32,6 +32,10 @@ class Sprite(PhysicObject):
         if self.space is not None:
             self.space.add(self.body, self.poly)
 
+    def change_img_src(self, new_src):
+        self.path = os.path.join('assets', new_src)
+        self.img = self.prepare_img()
+
     def prepare_img(self):
         loaded_img = pygame.image.load(self.path)
         w, h = (loaded_img.get_width(), loaded_img.get_height())
@@ -44,6 +48,7 @@ class Sprite(PhysicObject):
                 w = self.width
         elif self.height:
             w = w * self.height / h
+            h = self.height
 
         self.width = w
         self.height = h

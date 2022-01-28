@@ -3,10 +3,12 @@ import os
 import unittest
 from unittest.mock import Mock, patch, mock_open, MagicMock
 
+import pygame.image
 from pygame.math import Vector2
 
 from models.map_builder import MapBuilder
-from models.objects.rectangle import Rectangle
+from models.objects.physic_objects import PhysicObject
+from models.objects.player import Player
 from models.objects.sprite import Sprite
 
 
@@ -77,119 +79,6 @@ class MapBuilderConstructObjectTest(unittest.TestCase):
 
         with self.assertRaises(NotImplementedError):
             self.map_builder.construct_object(map_object, None)
-
-    # TYPE SPRITE
-    def test_type_sprite_require_no_asset(self):
-        map_object = {
-            "type": "sprite",
-            "position": [0, 0],
-            "size": [0, 0]
-        }
-
-        with self.assertRaises(ValueError):
-            self.map_builder.construct_object(map_object, None)
-
-    def test_type_sprite_require_no_position(self):
-        map_object = {
-            "type": "sprite",
-            "asset": "asset name",
-            "size": [0, 0]
-        }
-
-        with self.assertRaises(ValueError):
-            self.map_builder.construct_object(map_object, None)
-
-    def test_type_sprite_require_no_size(self):
-        map_object = {
-            "type": "sprite",
-            "asset": "asset name",
-            "position": [0, 0]
-        }
-
-        with self.assertRaises(ValueError):
-            self.map_builder.construct_object(map_object, None)
-
-    def test_type_sprite_not_found_asset(self):
-        map_object = {
-            "type": "sprite",
-            "asset": "asset name",
-            "position": [0, 0],
-            "size": [0, 0]
-        }
-        self.map_builder.assets = []
-
-        self.assertRaises(ValueError, self.map_builder.construct_object, map_object, None)
-
-    def test_type_sprite_returning_object(self):
-        map_object = {
-            "type": "sprite",
-            "asset": "asset name",
-            "position": [0, 0],
-            "size": [0, 0]
-        }
-        self.map_builder.assets = [
-            {"name": "asset name", "src": "random_sprite.png"}
-        ]
-        Sprite.prepare_img = Mock(return_value=None)
-
-        result = self.map_builder.construct_object(map_object, None)
-        self.assertEqual(len(result), 1)
-        result = result[0]
-        self.assertIsInstance(result, Sprite)
-        self.assertEqual(os.path.normpath(result.path), os.path.normpath("assets/random_sprite.png"))
-
-    # TYPE RECT
-    def test_type_rect_require_no_color(self):
-        map_object = {
-            "type": "rect",
-            "position": [0, 0],
-            "size": [0, 0]
-        }
-
-        with self.assertRaises(ValueError):
-            self.map_builder.construct_object(map_object, None)
-
-    def test_type_rect_require_no_position(self):
-        map_object = {
-            "type": "rect",
-            "color": "#000000",
-            "size": [0, 0]
-        }
-
-        with self.assertRaises(ValueError):
-            self.map_builder.construct_object(map_object, None)
-
-    def test_type_rect_require_no_size(self):
-        map_object = {
-            "type": "rect",
-            "color": "#000000",
-            "position": [0, 0]
-        }
-
-        with self.assertRaises(ValueError):
-            self.map_builder.construct_object(map_object, None)
-
-    def test_type_rect_returning_object(self):
-        map_object = {
-            "type": "rect",
-            "color": "#123456",
-            "position": [40, 10],
-            "size": [30, 20]
-        }
-        expect = Rectangle(
-            width=30,
-            height=20,
-            position=Vector2(40, 10),
-            color="#123456",
-            space=None
-        )
-
-        result = self.map_builder.construct_object(map_object, None)[0]
-        self.assertIsInstance(result, Rectangle)
-        self.assertEqual(result.position, expect.position)
-        self.assertEqual(result.width, expect.width)
-        self.assertEqual(result.height, expect.height)
-        self.assertEqual(result.color, expect.color)
 
     # STRETCH OPTIONS
     def test_stretch_require_no_start_position(self):
@@ -316,8 +205,109 @@ class MapBuilderGetElementsTest(unittest.TestCase):
             self.map_builder.assets = []
             self.assertRaises(ValueError, self.map_builder.get_elements, None)
 
+    def test_require_no_player(self):
+        map_source = json.dumps({
+            "assets": [],
+            "background": "",
+            "map": []
+        })
+        with patch("builtins.open", mock_open(read_data=map_source)):
+            self.map_builder.construct_object = Mock(return_value=None)
+            self.map_builder.load_assets = Mock()
+            self.map_builder.assets = []
+            self.assertRaises(ValueError, self.map_builder.get_elements, None)
+
+    def test_require_no_start_position_in_player(self):
+        map_source = json.dumps({
+            "assets": [],
+            "background": "",
+            "map": [],
+            "player": {
+                "lives": 5
+            }
+        })
+        with patch("builtins.open", mock_open(read_data=map_source)):
+            self.map_builder.construct_object = Mock(return_value=None)
+            self.map_builder.load_assets = Mock()
+            self.map_builder.assets = []
+            self.assertRaises(ValueError, self.map_builder.get_elements, None)
+
+    def test_require_no_lives_in_player(self):
+        map_source = json.dumps({
+            "assets": [],
+            "background": "",
+            "map": [],
+            "player": {
+                "start_position": [0, 0]
+            }
+        })
+        with patch("builtins.open", mock_open(read_data=map_source)):
+            self.map_builder.construct_object = Mock(return_value=None)
+            self.map_builder.load_assets = Mock()
+            self.map_builder.assets = []
+            self.assertRaises(ValueError, self.map_builder.get_elements, None)
+
+    def test_create_player(self):
+        map_source = json.dumps({
+            "assets": [],
+            "background": "",
+            "map": [],
+            "player": {
+                "start_position": [10, 20],
+                "lives": 4
+            }
+        })
+        with patch("builtins.open", mock_open(read_data=map_source)):
+            self.map_builder.construct_object = Mock(return_value=None)
+            self.map_builder.load_assets = Mock()
+            self.map_builder.assets = []
+
+            def prepare_img(self):
+                self.width = 50
+
+            Sprite.prepare_img = prepare_img
+            space = MagicMock()
+            space.add_collision_handle = MagicMock()
+            elements = self.map_builder.get_elements(space)
+
+            self.assertEqual(len(elements), 1)
+            player = elements[0]
+            self.assertIsInstance(player, Player)
+            self.assertEqual(player.player_lives, 4)
+            self.assertEqual(player.position.x, 10)
+            self.assertEqual(player.position.y, 20)
+
+    def test_load_background_solid_color(self):
+        map_source = json.dumps({
+            "assets": [],
+            "background": "#111111"
+        })
+        with patch("builtins.open", mock_open(read_data=map_source)):
+            self.map_builder.load_background()
+
+            self.assertEqual(self.map_builder.background_color, "#111111")
+            self.assertEqual(self.map_builder.background_image, None)
+
+    def test_load_background_img(self):
+        map_source = json.dumps({
+            "assets": [],
+            "background": "background.png"
+        })
+        with patch("builtins.open", mock_open(read_data=map_source)):
+            pygame.image.load = Mock()
+            pygame.transform.scale = Mock(return_value="image")
+
+            self.map_builder.load_background()
+
+            self.assertEqual(self.map_builder.background_color, None)
+            self.assertEqual(self.map_builder.background_image, "image")
+
     def test_load_all_elements(self):
         map_source = json.dumps({
+            "player": {
+                "start_position": [0, 0],
+                "lives": 5
+            },
             "map": [
                 {
                     "type": "rect",
@@ -336,5 +326,7 @@ class MapBuilderGetElementsTest(unittest.TestCase):
             self.map_builder.load_assets = Mock()
             self.map_builder.assets = []
 
-            elements = self.map_builder.get_elements(None)
-            self.assertEqual(len(elements), 2)
+            space = MagicMock()
+            space.add_collision_handle = MagicMock()
+            elements = self.map_builder.get_elements(space)
+            self.assertEqual(len(elements), 3)
