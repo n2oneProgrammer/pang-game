@@ -153,13 +153,16 @@ class MapBuilder:
         asset = self._get_asset(object_json["asset"])
         if asset is None:
             raise ValueError(f"Not found asset {object_json['asset']}")
-        return Sprite(
+        sprite = Sprite(
             path=asset['src'],
             position=Vector2(object_json["position"]),
             width=object_json["size"][0],
             height=object_json["size"][1],
-            space=space
+            space=space,
+            is_static=True
         )
+        list(sprite.body.shapes)[0].collision_type = ObjectCollisionType.WALL
+        return sprite
 
     def _construct_rect(self, object_json, space) -> PhysicObject:
         if "color" not in object_json:

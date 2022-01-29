@@ -99,6 +99,18 @@
       ]
     },
     {
+      "type": "sprite",
+      "asset": "wall2",
+      "position": [
+        340,
+        520
+      ],
+      "size": [
+        40,
+        40
+      ]
+    },
+    {
       "type": "ball",
       "asset": "ball",
       "position": [
