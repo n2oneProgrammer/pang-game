@@ -83,6 +83,9 @@ class Player(Sprite):
             if event.key == pygame.K_UP:
                 if len(self.climbing_ladders) > 0:
                     self.velocity = Vector2(0, -100)
+            if event.key == pygame.K_DOWN:
+                if len(self.climbing_ladders) > 0:
+                    self.velocity = Vector2(0, 100)
             if event.key == pygame.K_SPACE:
                 self.velocity = Vector2(0, 0)
                 from models.game_manager import GameManager
@@ -94,6 +97,8 @@ class Player(Sprite):
             if event.key == pygame.K_RIGHT:
                 self.velocity = Vector2(0, 0)
             if event.key == pygame.K_UP:
+                self.velocity = Vector2(0, 0)
+            if event.key == pygame.K_DOWN:
                 self.velocity = Vector2(0, 0)
         self.block_move()
 
