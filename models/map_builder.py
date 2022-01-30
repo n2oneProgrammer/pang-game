@@ -8,6 +8,7 @@ from pygame.math import Vector2
 
 from models.enums.ObjectsCollisionType import ObjectCollisionType
 from models.objects.ball import Ball
+from models.objects.ladder import Ladder
 from models.objects.physic_objects import PhysicObject
 from models.objects.player import Player
 from models.objects.rectangle import Rectangle
@@ -153,13 +154,16 @@ class MapBuilder:
         asset = self._get_asset(object_json["asset"])
         if asset is None:
             raise ValueError(f"Not found asset {object_json['asset']}")
-        return Sprite(
+        sprite = Sprite(
             path=asset['src'],
             position=Vector2(object_json["position"]),
             width=object_json["size"][0],
             height=object_json["size"][1],
-            space=space
+            space=space,
+            is_static=True
         )
+        list(sprite.body.shapes)[0].collision_type = ObjectCollisionType.WALL
+        return sprite
 
     def _construct_rect(self, object_json, space) -> PhysicObject:
         if "color" not in object_json:
@@ -169,6 +173,22 @@ class MapBuilder:
             width=object_json["size"][0],
             height=object_json["size"][1],
             color=object_json["color"],
+            space=space
+        )
+
+    def _construct_ladder(self, object_json, space) -> PhysicObject:
+        if "asset" not in object_json:
+            raise ValueError("Object Sprite must have asset(name to asset)")
+
+        asset = self._get_asset(object_json["asset"])
+        if asset is None:
+            raise ValueError(f"Not found asset {object_json['asset']}")
+
+        return Ladder(
+            path=asset['src'],
+            position=Vector2(object_json["position"]),
+            width=object_json["size"][0],
+            height=object_json["size"][1],
             space=space
         )
 

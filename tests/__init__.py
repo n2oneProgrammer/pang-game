@@ -1,2 +1,2 @@
 from tests.models import *
-from tests.mab_builder_tests import *
+from tests.map_builder_tests import *

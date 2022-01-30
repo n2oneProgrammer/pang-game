@@ -35,6 +35,7 @@ Ma typ listy elementów Każdy z elementów ma atrubuty:
     1. sprite - tworzy object typu obrazkowego (wymagane atrybuty asset, position, size)
     2. rect - tworzy object prostokąt ( wymagane atrybuty color, position, size)
     3. ball = tworzy object piłki ( wymagane atrybuty asset, position, radius, start_velocity)
+    4. ladder - tworzy drabinkę ( wymagane atrybuty asset, position, size)
 2. asset - typ tekstowy ( string ), odnośnik do assetu po nazwie
 3. position - pozycja objektu jako 2 elementowa lista z liczbami [x,y] lewego górnego rogu objektu. Punkt (0,0) jest w
    lewym górnym regu ekranu i wzrasta do prawego dolnego rogu

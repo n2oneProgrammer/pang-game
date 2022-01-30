@@ -3,3 +3,4 @@ class ObjectCollisionType:
     WALL = 2
     BALL = 4
     CHAIN = 8
+    LADDER = 16
