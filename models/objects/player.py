@@ -120,7 +120,6 @@ class Player(Sprite):
     def draw(self, screen: Surface):
         super().draw(screen)
         velocity = Vector2(0, 0)
-        print(self.move_direct)
         velocity.x = sign(self.move_direct[0]) * self.move_speed
         velocity.y = sign(self.move_direct[1]) * 100 * sign(len(self.climbing_ladders))
         self.velocity = velocity
