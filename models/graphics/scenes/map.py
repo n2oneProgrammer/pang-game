@@ -22,6 +22,7 @@ class Map(Scene):
         self.objects = self.map_builder.get_elements(self.space)
 
         self.objects.append(Ladder("ladder.png", Vector2(300, 520), self.space, 40, 40))
+        self.objects.append(Ladder("ladder.png", Vector2(380, 520), self.space, 40, 40))
 
     def update(self, delta_time):
         from models.game_manager import GameManager

@@ -1,3 +1,4 @@
+import math
 import time
 
 import pygame
@@ -10,6 +11,7 @@ from models.enums.ObjectsCollisionType import ObjectCollisionType
 from models.objects.chain_bullet import ChainBullet
 from models.objects.sprite import Sprite
 from models.utils.animation import Animation
+from models.utils.sign import sign
 
 
 class Player(Sprite):
@@ -29,6 +31,7 @@ class Player(Sprite):
         self.gravity_speed = 200
         self.climbing_ladders = []
         self.blocking_objects = []
+        self.move_direct = [0, 0]
         super().__init__("player_state/0.png", position, space, width, height, velocity, False, collision_type)
         self.body.elasticity = 1.0
         self.body.body_type = pymunk.Body.KINEMATIC
@@ -77,30 +80,30 @@ class Player(Sprite):
     def run_events(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                self.velocity = Vector2(-self.move_speed, 0)
+                self.move_direct[0] += -1
             if event.key == pygame.K_RIGHT:
-                self.velocity = Vector2(self.move_speed, 0)
+                self.move_direct[0] += 1
             if event.key == pygame.K_UP:
                 if len(self.climbing_ladders) > 0:
-                    self.velocity = Vector2(0, -100)
+                    self.move_direct[1] += -1
             if event.key == pygame.K_DOWN:
                 if len(self.climbing_ladders) > 0:
-                    self.velocity = Vector2(0, 100)
+                    self.move_direct[1] += 1
             if event.key == pygame.K_SPACE:
-                self.velocity = Vector2(0, 0)
                 from models.game_manager import GameManager
                 GameManager().scene.bullets.append(ChainBullet(self.position + Vector2(0, self.height), self.space))
                 self.last_shoot = time.time()
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
-                self.velocity = Vector2(0, 0)
+                self.move_direct[0] += 1
             if event.key == pygame.K_RIGHT:
-                self.velocity = Vector2(0, 0)
+                self.move_direct[0] += -1
             if event.key == pygame.K_UP:
-                self.velocity = Vector2(0, 0)
+                if self.move_direct[1] < 0:
+                    self.move_direct[1] += 1
             if event.key == pygame.K_DOWN:
-                self.velocity = Vector2(0, 0)
-        self.block_move()
+                if self.move_direct[1] > 0:
+                    self.move_direct[1] += -1
 
     def block_move(self):
         x_block = 0
@@ -116,11 +119,14 @@ class Player(Sprite):
 
     def draw(self, screen: Surface):
         super().draw(screen)
-        if len(self.climbing_ladders) == 0:
-            if self.velocity.y == 0:
-                self.velocity = Vector2(self.velocity.x, self.gravity_speed)
-            else:
-                self.velocity = Vector2(self.velocity.x, 0)
+        velocity = Vector2(0, 0)
+        print(self.move_direct)
+        velocity.x = sign(self.move_direct[0]) * self.move_speed
+        velocity.y = sign(self.move_direct[1]) * 100 * sign(len(self.climbing_ladders))
+        self.velocity = velocity
+        if len(self.climbing_ladders) == 0 or (self.move_direct[1] == 0 and len(self.climbing_ladders) == 0):
+            self.velocity = Vector2(self.velocity.x, self.gravity_speed)
+
         self.block_move()
         self.animation_controller()
 
