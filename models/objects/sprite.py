@@ -53,7 +53,7 @@ class Sprite(PhysicObject):
         self.width = w
         self.height = h
 
-        scaled_img = pygame.transform.scale(loaded_img, (w, h))
+        scaled_img = pygame.transform.smoothscale(loaded_img, (w, h))
 
         return scaled_img
 
